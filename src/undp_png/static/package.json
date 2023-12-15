@@ -1,0 +1,30 @@
+{
+  "name": "undp_png",
+  "version": "0.0.1",
+  "author": "Mammoth Geospatial",
+  "description": "Static code and assets for undp_png",
+  "contributors": [
+    {
+    }
+  ],
+  "scripts": {
+    "test": "jshint **.js",
+    "compile-less": "lessc -x ./less/site_base.less ./css/site_base.css",
+    "watch-less": "less-watch-compiler ./less/ ./css/ site_base.less"
+  },
+  "license": "BSD",
+  "private": "false",
+  "dependencies": {
+    "bootstrap": "3.4.1"
+  },
+  "devDependencies": {
+    "del": "*",
+    "gulp": "^4.0.2",
+    "gulp-util": "*",
+    "gulp-concat": "*",
+    "gulp-less": "*",
+    "less": "4.1.2",
+    "less-watch-compiler": "1.16.3",
+    "path": "*"
+  }
+}

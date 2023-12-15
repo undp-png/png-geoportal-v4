@@ -1,0 +1,34 @@
+{% load static %}
+
+<header class="gn-main-header">
+    {% include './brand_navbar.html'  with id='gn-brand-navbar' %}
+</header>
+<div class="gn-main-header-placeholder"></div>
+{% include './topbar.html' with id='gn-topbar' %}
+
+{% if show_hero %}
+    {% include './hero.html' %}
+{% endif %}
+
+{% if show_hero_about %}
+    {% include './hero_about.html' %}
+{% endif %}
+
+<script>
+  (function () {
+      const mainHeader = document.querySelector('.gn-main-header');
+      const mainHeaderPlaceholder = document.querySelector('.gn-main-header-placeholder');
+      const topbar = document.querySelector('#gn-topbar');
+      function resize() {
+          if (mainHeaderPlaceholder && mainHeader) {
+              mainHeaderPlaceholder.style.height = mainHeader.clientHeight + 'px';
+          }
+          if (topbar && mainHeader) {
+              topbar.style.top = mainHeader.clientHeight + 'px';
+          }
+      }
+      window.addEventListener('resize', resize);
+      window.addEventListener('DOMContentLoaded', resize);
+      resize();
+  })();
+</script>

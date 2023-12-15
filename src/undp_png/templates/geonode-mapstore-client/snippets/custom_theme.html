@@ -1,0 +1,30 @@
+{% extends "geonode-mapstore-client/snippets/custom_theme.html" %}
+{% load static %}
+
+{% block content %}
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Roboto+Condensed:wght@400;700&family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+<link href="{{ STATIC_URL }}css/site_base.css" rel="stylesheet"/>
+
+<!-- Add favicons below -->
+<link rel="shortcut icon" href="{% static 'favicon.ico' %}" type="image/x-icon"/>
+<link rel="icon" href="{% static 'favicon.ico' %}" type="image/x-icon">
+<link rel="apple-touch-icon" sizes="180x180" href="{% static '/apple-touch-icon.png' %}" >
+<link rel="icon" type="image/png" sizes="32x32" href="{% static ' /favicon-32x32.png' %}">
+<link rel="icon" type="image/png" sizes="16x16" href="{% static '/favicon-16x16.png' %}">
+
+<style>
+  :root {
+    --gn-font-family-sans-serif: Roboto, Arial, 'Helvetica Neue', sans-serif;;
+    --gn-font-family-base: Roboto, Arial, 'Helvetica Neue', sans-serif;
+    --gn-main-color: #333333;
+    --gn-link-color: #00b3bc;
+    --gn-link-hover-color: #008289;
+    --gn-button-primary-color: #fff;
+    --gn-button-primary-bg: #00518B;
+    --gn-button-primary-border-color: #00518B;
+      }
+</style>
+{% endblock %}

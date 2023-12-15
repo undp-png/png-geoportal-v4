@@ -1,0 +1,58 @@
+{% load static %}
+<style>
+    #gn-hero-about {
+        background-image: url("{% static 'img/header_about.jpg' %}");
+        background-size: cover;
+        background-position: top;
+        background-repeat: unset;
+        background-color: transparent;
+        background-blend-mode: unset;
+        text-shadow: none;
+        padding: 0;
+
+    }
+    .msgapi .gn-hero .hero-wrapper {
+        max-width: 100%;
+        padding: 200px 20px;
+    }
+    .hero-description h1 {
+      text-align: center;
+      font-size: 4vw;
+      font-weight: 700;
+      text-transform: uppercase;
+      font-family: 'Roboto Condensed', Roboto, sans-serif;
+      line-height: 5.5rem;
+      color: #f8b13d;
+      max-width: 1400px;
+      margin: 0 auto !important;
+      padding-bottom: 80px;
+    }
+    .hero-description .subtitle {
+      text-align: center;
+      font-size: 1.75rem;
+      font-weight: 500;
+      font-family: Roboto, Arial, 'Helvetica Neue', sans-serif;
+      letter-spacing: 1px;
+      line-height: 2.75rem;
+      color: #ffffff;
+      max-width: 1000px;
+      margin: 0 auto;
+    }
+
+    @media (max-width: 990px) {
+      .hero-description h1 {
+        font-size: 2.5rem;
+        line-height: 2.75rem;
+        padding-bottom: 30px;
+      }
+    }
+
+</style>
+<div id="gn-hero-about" class="gn-hero">
+    <div class="hero-wrapper">
+        <div class="hero-description">
+            <h1>Protecting Papua New Guinea's Biodiversity by Building a Home for its Environmental Data</h1>
+            <p class="subtitle">The Biodiversity and Climate Geoportal helps improves policymaking and investments while opening a pathway for communities to seek funding and technical support.</p>
+        </div>
+    </div>
+</div>

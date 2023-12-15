@@ -1,0 +1,157 @@
+diff --git a/src/socialaccountprovider/__init__.py b/src/socialaccountprovider/__init__.py
+new file mode 100644
+index 0000000..e69de29
+diff --git a/src/socialaccountprovider/apps.py b/src/socialaccountprovider/apps.py
+new file mode 100644
+index 0000000..4f078c8
+--- /dev/null
++++ b/src/socialaccountprovider/apps.py
+@@ -0,0 +1,6 @@
++from django.apps import AppConfig
++
++
++class SocialaccountproviderConfig(AppConfig):
++    default_auto_field = "django.db.models.BigAutoField"
++    name = "socialaccountprovider"
+diff --git a/src/socialaccountprovider/provider.py b/src/socialaccountprovider/provider.py
+new file mode 100644
+index 0000000..25f8053
+--- /dev/null
++++ b/src/socialaccountprovider/provider.py
+@@ -0,0 +1,29 @@
++from allauth.socialaccount.providers.base import ProviderAccount
++from allauth.socialaccount.providers.oauth2.provider import OAuth2Provider
++
++
++class LukimGatherAccount(ProviderAccount):
++    pass
++
++
++class LukimGatherProvider(OAuth2Provider):
++    id = "lukimgather"
++    name = "Lukim Gather"
++    account_class = LukimGatherAccount
++
++    def extract_uid(self, data):
++        return str(data.get("id"))
++
++    def extract_common_fields(self, data):
++        return {
++            "username": data.get("username"),
++            "email": data.get("email"),
++            "first_name": data.get("first_name"),
++            "last_name": data.get("last_name"),
++        }
++
++    def get_default_scope(self):
++        return ["read"]
++
++
++provider_classes = [LukimGatherProvider]
+diff --git a/src/socialaccountprovider/tests.py b/src/socialaccountprovider/tests.py
+new file mode 100644
+index 0000000..69d8d17
+--- /dev/null
++++ b/src/socialaccountprovider/tests.py
+@@ -0,0 +1,22 @@
++from allauth.socialaccount.tests import OAuth2TestsMixin
++from allauth.tests import MockedResponse, TestCase
++
++from .provider import LukimGatherProvider
++
++
++class LukimGatherOAuth2Tests(OAuth2TestsMixin, TestCase):
++    provider_id = LukimGatherProvider.id
++
++    def get_mocked_response(self):
++        return MockedResponse(
++            200,
++            """{
++          "ok": true,
++          "url": "https:\\/\\/cms.lukimgather.staging.nepware.com\\/",
++          "username": "admin",
++          "email": "admin@geonode.com",
++          "id": "1",
++          "first_name": "test",
++          "last_name": "user",
++        }""",
++        )
+diff --git a/src/socialaccountprovider/urls.py b/src/socialaccountprovider/urls.py
+new file mode 100644
+index 0000000..74afcaa
+--- /dev/null
++++ b/src/socialaccountprovider/urls.py
+@@ -0,0 +1,6 @@
++from allauth.socialaccount.providers.oauth2.urls import default_urlpatterns
++
++from .provider import LukimGatherProvider
++
++
++urlpatterns = default_urlpatterns(LukimGatherProvider)
+diff --git a/src/socialaccountprovider/views.py b/src/socialaccountprovider/views.py
+new file mode 100644
+index 0000000..f75d7ad
+--- /dev/null
++++ b/src/socialaccountprovider/views.py
+@@ -0,0 +1,36 @@
++import requests
++
++from allauth.socialaccount.providers.oauth2.client import OAuth2Error
++from allauth.socialaccount.providers.oauth2.views import (
++    OAuth2Adapter,
++    OAuth2LoginView,
++    OAuth2CallbackView,
++)
++
++from .provider import LukimGatherProvider
++from django.conf import settings
++
++
++class LukimGatherOAuth2Adapter(OAuth2Adapter):
++    provider_id = LukimGatherProvider.id
++
++    access_token_url = "{}/oauth/token/".format(settings.LUKIM_GATHER_SERVER_BASEURL)
++    authorize_url = "{}/oauth/authorize".format(settings.LUKIM_GATHER_SERVER_BASEURL)
++    identity_url = "{}/api/user".format(settings.LUKIM_GATHER_SERVER_BASEURL)
++
++    def complete_login(self, request, app, access_token, **kwargs):
++        extra_data = self.get_data(access_token.token)
++        return self.get_provider().sociallogin_from_response(request, extra_data)
++
++    def get_data(self, token):
++        headers = {"Authorization": "Bearer " + token}
++        response = requests.get(self.identity_url, headers=headers)
++        res = response.json()
++        if not res.get("ok"):
++            raise OAuth2Error()
++
++        return res
++
++
++oauth2_login = OAuth2LoginView.adapter_view(LukimGatherOAuth2Adapter)
++oauth2_callback = OAuth2CallbackView.adapter_view(LukimGatherOAuth2Adapter)
+diff --git a/src/undp_png/settings.py b/src/undp_png/settings.py
+index c60dc4b..763cf21 100644
+--- a/src/undp_png/settings.py
++++ b/src/undp_png/settings.py
+@@ -61,7 +61,7 @@ WSGI_APPLICATION = "{}.wsgi.application".format(PROJECT_NAME)
+ LANGUAGE_CODE = os.getenv('LANGUAGE_CODE', "en")
+ 
+ if PROJECT_NAME not in INSTALLED_APPS:
+-    INSTALLED_APPS += (PROJECT_NAME,)
++    INSTALLED_APPS += (PROJECT_NAME, "socialaccountprovider",)
+ 
+ # Location of url mappings
+ ROOT_URLCONF = os.getenv('ROOT_URLCONF', '{}.urls'.format(PROJECT_NAME))
+@@ -383,3 +383,10 @@ AUTH_EXEMPT_URLS += ('/maps/*',
+                      )
+ 
+ DEFAULT_MAP_ZOOM = int(os.environ.get('DEFAULT_MAP_ZOOM', 8))
++
++# Lukim gather OAuth2 server url
++LUKIM_GATHER_SERVER_BASEURL = os.getenv('LUKIM_GATHER_SERVER_BASEURL', 'https://cms.lukimgather.staging.nepware.com')
++
++# Temporary workaround to work social login work
++# [#8814] (https://github.com/GeoNode/geonode/issues/8814)
++SOCIALACCOUNT_LOGIN_ON_GET = True
+

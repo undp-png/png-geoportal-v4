@@ -1,0 +1,67 @@
+{% load static %}
+{% load base_tags %}
+
+<section class="footer-full">
+  <div class="container">
+    <div class="row">
+      <div class="col-md-2">
+        <div style="margin-bottom: 20px;">
+          <img class="footer-logo" src="/static/img/undp_sm.png" alt="UNDP logo">
+        </div>
+      </div>
+        <div class="col-md-3">
+          <ul class="list-unstyled">
+            <li class="menu-header">Data</li>
+            <li><a href="/catalogue/#/?f=dataset">Datasets</a></li>
+            <li><a href="/catalogue/#/search/?f=document">Documents</a></li>
+            <li><a href="/services/?limit=25">Remote Services</a></li>
+            {% if user.is_authenticated and not READ_ONLY_MODE %}
+                <li role="separator" class="divider"></li>
+                <li><a href="/catalogue/#/upload/dataset">Upload Datasets</a></li>
+                    {% if USE_GEOSERVER and CREATE_LAYER %}
+                      <li><a href="/createlayer/">Create Layer</a></li>
+                     {% endif %}
+                <li><a href="/catalogue/#/upload/document">Upload Document</a></li>
+            {% endif %}
+            {% if user.is_staff or user.is_superuser %}
+              {% if not READ_ONLY_MODE %}             
+                <li><a href="/services/register/">Add Remote Service</a></li>
+              {% endif %}
+            {% endif %}
+          </ul>
+        </div>
+        <div class="col-md-3">
+          <ul class="list-unstyled">
+            <li class="menu-header">Maps</li>
+            <li><a href="/catalogue/#/?f=map">Explore Maps</a></li>
+              {% if user.is_authenticated and not READ_ONLY_MODE %}
+                <li> <a href="/catalogue/#/map/new">Create Map</a></li>
+              {% endif %}
+          </ul>
+        <ul class="list-unstyled">
+            <li class="menu-header">Further info</li>
+            <li><a href="/about/">About</a></li>
+            <li><a href="/faqs/">FAQs</a></li>
+            <li><a href="/training/">Training</a></li>
+          </ul>
+        </div>
+        <div class="col-md-3">
+          <ul class="list-unstyled">
+            <li class="menu-header">Users</li>
+            <li><a href="/people/?limit=5&offset=0">People</a></li>
+            <li><a href="/groups/?limit=5&offset=0">Groups</a></li>
+            {% if perms.announcements.can_manage %}
+            <li><a href="{% url "announcements_list" %}">Announcements</a></li>
+            {% endif %}
+            {% if user.is_authenticated and not READ_ONLY_MODE %}
+            <li><a href="{% url "geonode.invitations:geonode-send-invite" %}">Invite Users</a></li>
+            {% endif %}
+            {% if user.is_superuser and not READ_ONLY_MODE %}
+            <li><a href="{% if SITEURL|default:""|slice:"-1:" == "/" %}{{SITEURL}}{% else %}{{SITEURL}}/{% endif %}admin/people/profile/add/">Add User</a></li>
+            <li><a href="{% url "group_create" %}">Create Group</a></li>
+            {% endif %}
+          </ul>
+        </div>
+    </div>
+  </div>
+</section>
